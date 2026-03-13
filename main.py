@@ -1,11 +1,11 @@
 from fastapi import FastAPI
 import pandas as pd
-import random
 
 app = FastAPI()
 
-# load dataset
 data = pd.read_csv("pipeline_leakage_dataset.csv")
+
+index = 0
 
 @app.get("/")
 def home():
@@ -14,7 +14,14 @@ def home():
 @app.get("/sensor-data")
 def sensor_data():
 
-    row = data.sample(1).iloc[0]
+    global index
+
+    row = data.iloc[index]
+
+    index += 1
+
+    if index >= len(data):
+        index = 0
 
     return {
         "water_speed": float(row["water_speed_mps"]),
