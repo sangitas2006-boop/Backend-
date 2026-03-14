@@ -36,3 +36,6 @@ def sensor_data():
         "vibration": float(row["pipe_vibration"]),
         "leakage": int(row["leakage"])
     }
+    @app.get("/routes")
+def list_routes():
+    return [route.path for route in app.routes]
