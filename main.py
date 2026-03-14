@@ -3,23 +3,29 @@ import pandas as pd
 
 app = FastAPI()
 
-data = pd.read_csv("pipeline_leakage_dataset.csv")
-
-index = 0
-
 @app.get("/")
 def home():
     return {"message": "Smart Water Pipeline Monitoring API"}
 
+# load dataset safely
+try:
+    data = pd.read_csv("pipeline_leakage_dataset.csv")
+except Exception as e:
+    data = None
+    print("CSV ERROR:", e)
+
+index = 0
+
 @app.get("/sensor-data")
 def sensor_data():
-
     global index
+
+    if data is None:
+        return {"error": "Dataset not loaded"}
 
     row = data.iloc[index]
 
     index += 1
-
     if index >= len(data):
         index = 0
 
